@@ -22,8 +22,8 @@ void LGame::loadGame()
     loadMedia(gCell[FLAG], "pictures/flag.png");
 
     //loadString
-    loadString(gameWin, "fonts/lazy.ttf", "You win !!!");
-    loadString(gameLose, "fonts/lazy.ttf", "You lose !!!");
+    loadString(gameWin, "fonts/LeagueGothic-Regular.otf", "Congratulate, You win !!!");
+    loadString(gameLose, "fonts/LeagueGothic-Regular.otf", "Better luck next time, You lose !!!");
 
     //set coordinate for each cell
     setPosition();
