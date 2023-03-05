@@ -8,7 +8,7 @@ int main()
     
     LGame newGame;
     newGame.loadGame();
-    // newGame.playGame();
+    newGame.playGame();
 
     std::cout << "No error found!";
     return 0;

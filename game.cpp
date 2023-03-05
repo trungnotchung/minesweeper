@@ -8,25 +8,31 @@ void LGame::loadGame()
     init();
 
     //loadMedia
-    loadMedia(gCell[EMPTY], "picture/empty.png");
-    // loadMedia(gCell[DEFAULT], "picture/default.png");
-    // loadMedia(gCell[NUMONE], "picture/one.png");
-    // loadMedia(gCell[NUMTWO], "picture/two.png");
-    // loadMedia(gCell[NUMTHREE], "picture/three.png");
-    // loadMedia(gCell[NUMFOUR], "picture/four.png");
-    // loadMedia(gCell[NUMFIVE], "picture/five.png");
-    // loadMedia(gCell[NUMSIX], "picture/six.png");
-    // loadMedia(gCell[NUMSEVEN], "picture/seven.png");
-    // loadMedia(gCell[NUMEIGHT], "picture/eight.png");
-    // loadMedia(gCell[BOMB], "picture/bomb.png");
-    // loadMedia(gCell[FLAG], "picture/flag.png");
+    loadMedia(gCell[EMPTY], "pictures/empty.png");
+    loadMedia(gCell[DEFAULT], "pictures/default.png");
+    loadMedia(gCell[NUMONE], "pictures/one.png");
+    loadMedia(gCell[NUMTWO], "pictures/two.png");
+    loadMedia(gCell[NUMTHREE], "pictures/three.png");
+    loadMedia(gCell[NUMFOUR], "pictures/four.png");
+    loadMedia(gCell[NUMFIVE], "pictures/five.png");
+    loadMedia(gCell[NUMSIX], "pictures/six.png");
+    loadMedia(gCell[NUMSEVEN], "pictures/seven.png");
+    loadMedia(gCell[NUMEIGHT], "pictures/eight.png");
+    loadMedia(gCell[BOMB], "pictures/bomb.png");
+    loadMedia(gCell[FLAG], "pictures/flag.png");
 
     //loadString
-    // loadString(gameWin, "lazy.ttf", "You win !!!");
-    // loadString(gameLose, "lazy.ttf", "You lose !!!");
+    loadString(gameWin, "fonts/lazy.ttf", "You win !!!");
+    loadString(gameLose, "fonts/lazy.ttf", "You lose !!!");
 
     //set coordinate for each cell
-    // setPosition();
+    setPosition();
+
+    for(int i=0; i<SIZE; ++i)
+    {
+        for(int j=0; j<SIZE; ++j)
+            curGrid[i][j] = gCell[DEFAULT];
+    }
 }
 
 void LGame::playGame()
@@ -59,9 +65,10 @@ void LGame::playGame()
                     generateCellType(mouseClick);
                 }
                 processMouseClick(mouseClick, (e.button.button == SDL_BUTTON_RIGHT));
+                if(numOpenCell == SIZE * SIZE - CNT_BOMB)
+                    winGame = true;
             }
         }
-
         //Clear screen
         SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
         SDL_RenderClear( gRenderer );
@@ -81,8 +88,30 @@ void LGame::playGame()
         //Update screen
         SDL_RenderPresent( gRenderer );
 
-        // if(endgame)
-        //     quit = true;
+        //lose
+        if(endGame)
+        {
+            SDL_Delay(1000);
+            SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+            SDL_RenderClear( gRenderer );
+            gameLose.render(gRenderer, ( SCREEN_WIDTH - gameLose.getWidth() ) / 2, ( SCREEN_HEIGHT - gameLose.getHeight() ) / 2 );
+            SDL_RenderPresent( gRenderer );
+            SDL_Delay(2000);
+            quit = true;
+        }
+
+        //win
+        if(winGame)
+        {
+            SDL_Delay(1000);
+            SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+            SDL_RenderClear( gRenderer );
+            gameWin.render(gRenderer, ( SCREEN_WIDTH - gameWin.getWidth() ) / 2, ( SCREEN_HEIGHT - gameWin.getHeight() ) / 2 );
+            SDL_RenderPresent( gRenderer );
+            SDL_Delay(2000);
+            quit = true;
+        }
+        // SDL_RenderPresent( gRenderer );
     }
 }
 
@@ -297,7 +326,7 @@ void LGame::processMouseClick(SDL_Point mouseClick, bool rightClick)
     haveFlag[x][y] = false;
     if(haveBomb[x][y])
     {
-        endgame = true;
+        endGame = true;
         return;
     }
     if(cellType[x][y] != EMPTY)
@@ -316,7 +345,7 @@ void LGame::processMouseClick(SDL_Point mouseClick, bool rightClick)
         for(int dir=0; dir<SIZE; ++dir)
         {
             int vx = ux + dx[dir], vy = uy + dy[dir];
-            if(!inside(vx, vy) || isHide[vx][vy] == false) //|| haveFlag[vx][vy])
+            if(!inside(vx, vy) || isHide[vx][vy] == false || haveFlag[vx][vy])
                 continue;
             isHide[vx][vy] = false;
             ++numOpenCell;
@@ -340,9 +369,11 @@ LGame::LGame()
             haveFlag[i][j] = false;
         }
     }
-    endgame = false;
+    endGame = false;
+    winGame = false;
     generated = false;
     numOpenCell = 0;
+    cntFrame = 0;
     remainFlag = CNT_BOMB;
 }
 

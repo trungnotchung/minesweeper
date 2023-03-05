@@ -79,8 +79,8 @@ class LGame
         bool haveBomb[SIZE][SIZE];
         bool haveFlag[SIZE][SIZE];
         bool isHide[SIZE][SIZE];
-        bool endgame, generated;
-        int numOpenCell, remainFlag;
+        bool winGame, endGame, generated;
+        int numOpenCell, remainFlag, cntFrame;
         std::queue<std::pair<int, int> > q;;
 };
 #endif

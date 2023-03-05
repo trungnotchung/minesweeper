@@ -3,6 +3,7 @@
 LTexture::LTexture()
 {
 	//Initialize
+	gFont = NULL;
 	mTexture = NULL;
 	mWidth = 0;
 	mHeight = 0;
@@ -95,7 +96,7 @@ bool LTexture::loadString(SDL_Renderer *gRender, std::string path, std::string s
     bool success = true;
 
 	//Open the font
-	gFont = TTF_OpenFont( path.c_str(), 28);
+	gFont = TTF_OpenFont( path.c_str(), 32);
 	if( gFont == NULL )
 	{
 		printf( "Failed to load font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -123,6 +124,7 @@ void LTexture::free()
 	{
 		TTF_CloseFont( gFont );
 		SDL_DestroyTexture( mTexture );
+		gFont = NULL;
 		mTexture = NULL;
 		mWidth = 0;
 		mHeight = 0;
